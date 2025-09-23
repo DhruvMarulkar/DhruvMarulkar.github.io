@@ -139,48 +139,67 @@ That means I build things that feel a little unexpected , and turn problems into
       <a href="https://www.linkedin.com/in/dhruv-marulkar-995389331/">[LinkdIn]</a>
     </div>
   </div>
+<!-- Globe Container -->
+<div id="globe"></div>
 
-  <!-- D3.js + Globe -->
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://d3js.org/topojson.v3.min.js"></script>
-  <script>
-    const width = 400, height = 400;
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://d3js.org/topojson.v3.min.js"></script>
+<script>
+  const container = document.getElementById("globe");
 
-    const svg = d3.select("#globe").append("svg")
-      .attr("viewBox", `0 0 ${width} ${height}`)
-      .attr("xmlns", "http://www.w3.org/2000/svg");
+  let width = container.clientWidth || 400;
+  let height = width;
 
-    const projection = d3.geoOrthographic()
-      .scale(190)
+  const svg = d3.select("#globe").append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
+
+  let projection = d3.geoOrthographic()
+    .scale(width / 2.2) // scale based on width
+    .translate([width / 2, height / 2])
+    .clipAngle(90);
+
+  let path = d3.geoPath().projection(projection);
+
+  const graticule = d3.geoGraticule10();
+  svg.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+  d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world => {
+    const countries = topojson.feature(world, world.objects.countries);
+
+    svg.append("g")
+      .selectAll("path")
+      .data(countries.features)
+      .join("path")
+      .attr("class", "land")
+      .attr("d", path);
+
+    // Rotation animation
+    d3.timer(function(elapsed) {
+      projection.rotate([elapsed * 0.02, -15]);
+      svg.selectAll("path").attr("d", path);
+    });
+  });
+
+  // Resize handler
+  window.addEventListener("resize", () => {
+    width = container.clientWidth;
+    height = width;
+
+    svg.attr("viewBox", `0 0 ${width} ${height}`);
+
+    projection = d3.geoOrthographic()
+      .scale(width / 2.2)
       .translate([width / 2, height / 2])
       .clipAngle(90);
 
-    const path = d3.geoPath().projection(projection);
+    path = d3.geoPath().projection(projection);
 
-    const graticule = d3.geoGraticule10();
-
-    svg.append("path")
-      .datum(graticule)
-      .attr("class", "graticule")
-      .attr("d", path);
-
-    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world => {
-      const countries = topojson.feature(world, world.objects.countries);
-
-      svg.append("g")
-        .selectAll("path")
-        .data(countries.features)
-        .join("path")
-        .attr("class", "land")
-        .attr("d", path);
-
-      // Rotation animation
-      d3.timer(function(elapsed) {
-        projection.rotate([elapsed * 0.02, -15]);
-        svg.selectAll("path").attr("d", path);
-      });
-    });
-  </script>
+    svg.selectAll("path").attr("d", path);
+  });
+</script>
 </body>
 </html>
-
