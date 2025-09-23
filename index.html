@@ -89,7 +89,7 @@
       touch-action: none;       
       overscroll-behavior: none;
       width: 100%;
-      max-width: 400px; /* works for desktop */
+      max-width: 400px;
       margin: 20px auto;
       filter:
         drop-shadow(0 0 6px #00ff00)
@@ -153,13 +153,13 @@
   <script src="https://d3js.org/topojson.v3.min.js"></script>
   <script>
     const container = document.getElementById("globe");
+    let currentWidth = container.clientWidth;
 
     function renderGlobe() {
-      // Clear any previous globe before re-render
       d3.select("#globe").selectAll("*").remove();
 
       let width = container.clientWidth;
-      let height = width; // square globe
+      let height = width; // keep square globe
 
       const svg = d3.select("#globe").append("svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
@@ -188,20 +188,38 @@
           .attr("class", "land")
           .attr("d", path);
 
-        // Rotation animation
-        d3.timer(function(elapsed) {
-          projection.rotate([elapsed * 0.02, -15]);
-          svg.selectAll("path").attr("d", path);
-        });
+        // 🌍 Smooth rotation with requestAnimationFrame
+        let lastTime = null;
+        function rotate(time) {
+          if (lastTime !== null) {
+            let dt = (time - lastTime) / 1000; // seconds
+            let rotation = projection.rotate();
+            rotation[0] += 10 * dt; // degrees per second
+            projection.rotate(rotation);
+            svg.selectAll("path").attr("d", path);
+          }
+          lastTime = time;
+          requestAnimationFrame(rotate);
+        }
+        requestAnimationFrame(rotate);
       });
     }
 
     // Initial render
     renderGlobe();
 
-    // Re-render on resize (desktop <-> mobile)
-    window.addEventListener("resize", renderGlobe);
+    // Debounced resize handler
+    let resizeTimeout;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        let newWidth = container.clientWidth;
+        if (newWidth !== currentWidth) {
+          currentWidth = newWidth;
+          renderGlobe();
+        }
+      }, 200);
+    });
   </script>
 </body>
 </html>
-
