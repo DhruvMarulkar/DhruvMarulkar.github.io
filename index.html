@@ -2,143 +2,185 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dhruv Marulkar - Retro Terminal Portfolio</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #0d0d0d;
-      color: #f5f5f5;
-      overflow-x: hidden;
-    }
-
-    .stars {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
       background: black;
-      overflow: hidden;
-    }
-    .stars::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 200%;
-      background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
-      animation: moveStars 60s linear infinite;
-    }
-    @keyframes moveStars {
-      from { transform: translate(0,0); }
-      to { transform: translate(-500px,-500px); }
-    }
-
-    header {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+      color: #00ff00;
+      font-family: "Courier New", monospace;
+      margin: 0;
       padding: 20px;
-    }
-    header img.profile {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      margin-bottom: 20px;
-      border: 3px solid #444;
-    }
-    header h1 {
-      font-size: 3rem;
-      margin: 10px 0;
-    }
-    blockquote {
-      font-size: 1.1rem;
-      margin: 20px 0;
-      max-width: 600px;
-      color: #ccc;
-      border-left: 4px solid #444;
-      padding-left: 15px;
-    }
-
-    .contact-buttons {
-      margin-top: 20px;
-    }
-    .contact-buttons a {
-      background: #f5f5f5;
-      color: #111;
-      padding: 10px 20px;
-      margin: 5px;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      display: inline-flex;
-      align-items: center;
-    }
-    .contact-buttons a img {
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-    }
-
-    section {
-      padding: 60px 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    h2 {
       text-align: center;
-      margin-bottom: 20px;
-      color: #ddd;
+      user-select: none;
     }
+
+    .cursor::after {
+      content: "_";
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .window {
+      border: 2px solid #00ff00;
+      margin: 20px auto;
+      padding: 15px;
+      max-width: 800px;
+    }
+
+    .titlebar {
+      border-bottom: 2px solid #00ff00;
+      padding: 3px 6px;
+      font-weight: bold;
+      background: black;
+      text-align: left;
+    }
+
+    h1 {
+      margin: 10px 0;
+      color: #00ff00;
+    }
+
+    blockquote {
+      border-left: 2px solid #00ff00;
+      padding-left: 10px;
+      color: #00ff00;
+      font-style: italic;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .contact-buttons a {
+      display: inline-block;
+      margin: 5px;
+      padding: 5px 10px;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .contact-buttons a:hover {
+      background: #00ff00;
+      color: black;
+    }
+
     .skills {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
     }
+
     .card {
-      background: #1a1a1a;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      border: 1px solid #00ff00;
+      padding: 10px;
+      text-align: center;
+      user-select: none;
+    }
+
+    /* Globe Container */
+    #globe {
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      filter:
+        drop-shadow(0 0 6px #00ff00)
+        drop-shadow(0 0 12px #00ff00);
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .land {
+      fill: rgba(0, 255, 0, 0.08);
+      stroke: #00ff00;
+      stroke-width: 0.6;
+    }
+
+    .graticule {
+      fill: none;
+      stroke: #00ff00;
+      stroke-opacity: 0.5;
+      stroke-width: 0.5;
     }
   </style>
 </head>
 <body>
 
-  <div class="stars"></div>
-  
-  <header>
-    <img class="profile" src="https://avatars.githubusercontent.com/u/198887497?s=400&u=3fa91eea6bde2f210250732d288f6a3d0a10a82c&v=4" />
-    <h1>Dhruv Marulkar</h1>
-
+  <!-- Profile Window -->
+  <div class="window">
+    <div class="titlebar">PORTFOLIO</div>
+    <h1>Dhruv Marulkar<span class="cursor"></span></h1>
+    <div id="globe"></div>
+    <section class="[about-me]">
+<h2>[About Me]</h2>
+<p>
+I am part code wrangler , part chaos navigator<br>
+with ADHD as my rocket fuel and ALEXITHYMIA as my compass , 
+I see the world sideways , upside down , and sometimes in glitch mode.<br>
+That means I build things that feel a little unexpected , and turn problems into playgrounds.<br>
+</p>
+</section>
     <blockquote>
-      <p>“Kids who have never seen peace and kids who have never seen war have different values”</p>
+      “Kids who have never seen peace and kids who have never seen war have different values”
     </blockquote>
-
     <div class="contact-buttons">
-      <a href="https://github.com/DhruvMarulkar"><img src="https://img.icons8.com/?size=100&id=12599&format=png&color=000000" />GitHub</a>
-      <a href="https://t.me/DhruvMarulkar"target="_blank"><img src="https://img.icons8.com/?size=100&id=86875&format=png&color=000000" />Telegram</a>
-      <a href="mailto:marulkardhruv21@gmail.com"><img src="https://img.icons8.com/?size=100&id=53435&format=png&color=000000" />Mail</a>
+      <a href="https://github.com/DhruvMarulkar" target="_blank" rel="noopener noreferrer">[GitHub]</a>
+      <a href="https://t.me/DhruvMarulkar" target="_blank" rel="noopener noreferrer">[Telegram]</a>
+      <a href="mailto:marulkardhruv21@gmail.com">[Mail]</a>
+      <a href="https://www.linkedin.com/in/dhruv-marulkar-995389331/">[LinkdIn]</a>
     </div>
-  </header>
+  </div>
 
-  <section id="skills">
-    <h2>Skills</h2>
-    <div class="skills">
-      <div class="card">Python</div>
-      <div class="card">C++</div>
-      <div class="card">Computer Graphics</div>
-      <div class="card">Data Science</div>
-      <div class="card">SQL</div>
-      <div class="card">Html</div>
-    </div>
-  </section>  
+  <!-- D3.js + Globe -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://d3js.org/topojson.v3.min.js"></script>
+  <script>
+    const width = 400, height = 400;
 
+    const svg = d3.select("#globe").append("svg")
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("xmlns", "http://www.w3.org/2000/svg");
+
+    const projection = d3.geoOrthographic()
+      .scale(190)
+      .translate([width / 2, height / 2])
+      .clipAngle(90);
+
+    const path = d3.geoPath().projection(projection);
+
+    const graticule = d3.geoGraticule10();
+
+    svg.append("path")
+      .datum(graticule)
+      .attr("class", "graticule")
+      .attr("d", path);
+
+    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world => {
+      const countries = topojson.feature(world, world.objects.countries);
+
+      svg.append("g")
+        .selectAll("path")
+        .data(countries.features)
+        .join("path")
+        .attr("class", "land")
+        .attr("d", path);
+
+      // Rotation animation
+      d3.timer(function(elapsed) {
+        projection.rotate([elapsed * 0.02, -15]);
+        svg.selectAll("path").attr("d", path);
+      });
+    });
+  </script>
 </body>
 </html>
+
