@@ -86,8 +86,8 @@
 
     /* Globe Container */
     #globe {
-      width: 400px;
-      height: 400px;
+      width: 100%;
+      max-width: 400px; /* works for desktop */
       margin: 20px auto;
       filter:
         drop-shadow(0 0 6px #00ff00)
@@ -96,7 +96,7 @@
 
     svg {
       width: 100%;
-      height: 100%;
+      height: auto; /* keeps square aspect ratio */
     }
 
     .land {
@@ -119,87 +119,87 @@
   <div class="window">
     <div class="titlebar">PORTFOLIO</div>
     <h1>Dhruv Marulkar<span class="cursor"></span></h1>
+
+    <!-- Responsive Globe -->
     <div id="globe"></div>
+
     <section class="[about-me]">
-<h2>[About Me]</h2>
-<p>
-I am part code wrangler , part chaos navigator<br>
-with ADHD as my rocket fuel and ALEXITHYMIA as my compass , 
-I see the world sideways , upside down , and sometimes in glitch mode.<br>
-That means I build things that feel a little unexpected , and turn problems into playgrounds.<br>
-</p>
-</section>
+      <h2>[About Me]</h2>
+      <p>
+        I am part code wrangler , part chaos navigator<br>
+        with ADHD as my rocket fuel and ALEXITHYMIA as my compass ,  
+        I see the world sideways , upside down , and sometimes in glitch mode.<br>
+        That means I build things that feel a little unexpected ,  
+        and turn problems into playgrounds.<br>
+      </p>
+    </section>
+
     <blockquote>
       “Kids who have never seen peace and kids who have never seen war have different values”
     </blockquote>
+
     <div class="contact-buttons">
       <a href="https://github.com/DhruvMarulkar" target="_blank" rel="noopener noreferrer">[GitHub]</a>
       <a href="https://t.me/DhruvMarulkar" target="_blank" rel="noopener noreferrer">[Telegram]</a>
       <a href="mailto:marulkardhruv21@gmail.com">[Mail]</a>
-      <a href="https://www.linkedin.com/in/dhruv-marulkar-995389331/">[LinkdIn]</a>
+      <a href="https://www.linkedin.com/in/dhruv-marulkar-995389331/">[LinkedIn]</a>
     </div>
   </div>
-<!-- Globe Container -->
-<div id="globe"></div>
 
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="https://d3js.org/topojson.v3.min.js"></script>
-<script>
-  const container = document.getElementById("globe");
+  <!-- D3.js + Globe -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://d3js.org/topojson.v3.min.js"></script>
+  <script>
+    const container = document.getElementById("globe");
 
-  let width = container.clientWidth || 400;
-  let height = width;
+    function renderGlobe() {
+      // Clear any previous globe before re-render
+      d3.select("#globe").selectAll("*").remove();
 
-  const svg = d3.select("#globe").append("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet");
+      let width = container.clientWidth;
+      let height = width; // square globe
 
-  let projection = d3.geoOrthographic()
-    .scale(width / 2.2) // scale based on width
-    .translate([width / 2, height / 2])
-    .clipAngle(90);
+      const svg = d3.select("#globe").append("svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet");
 
-  let path = d3.geoPath().projection(projection);
+      let projection = d3.geoOrthographic()
+        .scale(width / 2.2)
+        .translate([width / 2, height / 2])
+        .clipAngle(90);
 
-  const graticule = d3.geoGraticule10();
-  svg.append("path")
-    .datum(graticule)
-    .attr("class", "graticule")
-    .attr("d", path);
+      let path = d3.geoPath().projection(projection);
 
-  d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world => {
-    const countries = topojson.feature(world, world.objects.countries);
+      const graticule = d3.geoGraticule10();
+      svg.append("path")
+        .datum(graticule)
+        .attr("class", "graticule")
+        .attr("d", path);
 
-    svg.append("g")
-      .selectAll("path")
-      .data(countries.features)
-      .join("path")
-      .attr("class", "land")
-      .attr("d", path);
+      d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(world => {
+        const countries = topojson.feature(world, world.objects.countries);
 
-    // Rotation animation
-    d3.timer(function(elapsed) {
-      projection.rotate([elapsed * 0.02, -15]);
-      svg.selectAll("path").attr("d", path);
-    });
-  });
+        svg.append("g")
+          .selectAll("path")
+          .data(countries.features)
+          .join("path")
+          .attr("class", "land")
+          .attr("d", path);
 
-  // Resize handler
-  window.addEventListener("resize", () => {
-    width = container.clientWidth;
-    height = width;
+        // Rotation animation
+        d3.timer(function(elapsed) {
+          projection.rotate([elapsed * 0.02, -15]);
+          svg.selectAll("path").attr("d", path);
+        });
+      });
+    }
 
-    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    // Initial render
+    renderGlobe();
 
-    projection = d3.geoOrthographic()
-      .scale(width / 2.2)
-      .translate([width / 2, height / 2])
-      .clipAngle(90);
-
-    path = d3.geoPath().projection(projection);
-
-    svg.selectAll("path").attr("d", path);
-  });
-</script>
+    // Re-render on resize (desktop <-> mobile)
+    window.addEventListener("resize", renderGlobe);
+  </script>
 </body>
 </html>
+
